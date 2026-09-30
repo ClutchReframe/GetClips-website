@@ -1,133 +1,119 @@
-# getclips 子域名与 GitHub Pages 配置
+# 把 Clips 官网发布到 getclips.clutchreframe.com
 
-目标网站：`https://getclips.clutchreframe.com/`。`getclips` 是现有 `clutchreframe.com` 下的子域名，无需另购域名。本指南提供操作步骤；文档和 workflow 已准备不表示账号内配置已经执行。部署状态请记录在本地忽略的 `tmp/` 中。
+完成后，网站地址是 **https://getclips.clutchreframe.com/**。这个地址使用现有的 `clutchreframe.com` 域名，无需另买域名。
 
-本次配置范围为新仓库 `ClutchReframe/GetClips-website` 的 Pages、新子域 `getclips` 的 DNS，以及必要的新子域验证 TXT。保留现有站点的代码、域名绑定和发布设置。共享域名的注册、NS、根域、`www`、其他子域、现有验证 TXT、全域 SSL 和重定向策略不在该范围内。
+**如果代码已经推送到 GitHub，直接从第 3 步开始。**
 
-## 1. 确认目标和现有归属
+## 1. 创建 GitHub 仓库
 
-在已登录的 GitHub 与 Cloudflare 中核对：
+已有 [ClutchReframe/GetClips-website](https://github.com/ClutchReframe/GetClips-website) 仓库就跳过这一步。
 
-- GitHub owner 为 `ClutchReframe`，目标仓库为 `GetClips-website`，地址为 <https://github.com/ClutchReframe/GetClips-website>。
-- 仓库名没有被其他项目占用；当前套餐和仓库可见性支持 Pages。公开仓库可使用 GitHub Free 的 Pages；私有仓库需适用的付费方案。
-- Cloudflare 的 `clutchreframe.com` 区域内，`getclips` 是否已存在 A、AAAA、CNAME 或相关记录；GitHub 是否已有该域名的绑定。
-- 若记录或域名已被占用，先确定用途与归属，不覆盖服务。公共 DNS 没有记录不证明 GitHub 后台没有绑定。
+1. 登录 GitHub，打开[新建仓库页面](https://github.com/new)。
+2. **Owner** 选择 `ClutchReframe`，**Repository name** 填 `GetClips-website`。
+3. 选择 **Public**。README 和 .gitignore 不勾选，License 选 **None**。
+4. 点击 **Create repository**。
 
-PowerShell 只读检查：
+## 2. 推送本地网站代码
 
-```powershell
-gh repo view ClutchReframe/GetClips-website --json nameWithOwner,visibility,url
-Resolve-DnsName getclips.clutchreframe.com -Type CNAME
-```
-
-若 `gh` 未安装或尚未登录，在 GitHub 网页完成对应检查。仓库不存在和权限不足可能都表现为无法访问，需在正确账户下确认。
-
-## 2. 准备并发布新仓库
-
-本地验收完成、确定公开仓库内容并收到发布指令后执行。进入本项目根目录，核对独立 Git 归属：
-
-```powershell
-git rev-parse --show-toplevel
-git rev-parse --git-common-dir
-git remote -v
-git status --short
-```
-
-顶层与 common dir 应归属本项目。origin 为空或只指向新仓库，不能复用其他网站的 Git 目录、worktree 或 origin。不要将 `tmp/`、原始视频、来源 JSON 或本机文件纳入提交。
-
-以下是首次发布的操作命令，不会因保存本指南而执行：
+在本地网站项目根目录打开 Windows PowerShell。首次提交时运行：
 
 ```powershell
 git add .gitignore .github README.md docs site
-git diff --cached --stat
-git diff --cached
-git commit -m "创建 Clips 双游戏官网"
-gh repo create ClutchReframe/GetClips-website --public --source . --remote origin
+git commit -m "发布 Clips 官网"
 ```
 
-创建仓库后，先完成下一节的 Pages source 设置，再推送：
+如果已经提交过，跳过上面两条命令。尚未连接远端时，执行一次：
+
+```powershell
+git remote add origin https://github.com/ClutchReframe/GetClips-website.git
+```
+
+然后推送：
 
 ```powershell
 git push -u origin main
 ```
 
-已存在并确认归属的空远端可用 `git remote add origin https://github.com/ClutchReframe/GetClips-website.git` 连接，跳过 `gh repo create`。已配置正确 origin 时无需重复添加。不要重置、覆盖已有历史或强制推送。
+刷新 GitHub 仓库首页，能看到 `site` 文件夹就说明代码已上传。首次推送后如果收到部署失败邮件，继续完成第 3 步。
 
-## 3. 设置 Pages source 并检查默认网址
+## 3. 开启 GitHub Pages，让网站先能打开
 
-打开新仓库 **Settings → Pages → Build and deployment → Source**，选择 **GitHub Actions**。若空仓库界面尚不可设置，先推送，在设置完成后从 Actions 手动重新运行 workflow。
+1. 打开仓库的 [Settings → Pages](https://github.com/ClutchReframe/GetClips-website/settings/pages)。
+2. 找到 **Build and deployment**，点击 **Source** 下拉框。
+3. 选择 **GitHub Actions**。仓库已经带有发布流程，下方推荐的模板不用再创建。选完后刷新页面，确认 Source 仍显示 GitHub Actions。（[GitHub 设置说明](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow)）
+4. 打开仓库的 [Actions 发布页面](https://github.com/ClutchReframe/GetClips-website/actions/workflows/pages.yml)，点击最新一条运行记录。
+5. 如果显示红色失败，点击右上角 **Re-run jobs → Re-run all jobs**，在弹窗中点击 **Re-run jobs**。如果已经显示绿色成功，跳过这一步。（[GitHub 重跑说明](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs)）
+6. 等待 `deploy` 显示绿色对勾。若仍然失败，点开 `deploy`，再展开红色的步骤查看具体错误。
+7. 回到 **Settings → Pages**，点击 **Visit site**，打开页面上显示的网站地址。
 
-`.github/workflows/pages.yml` 在 main push 或手动触发时执行，使用该仓库的 `GITHUB_TOKEN`；官方 actions 为 checkout、configure-pages、upload-pages-artifact 和 deploy-pages。只上传 `site/`，不需要 Jekyll 或 Node 构建。发布 job 使用 `contents: read`、`pages: write`、`id-token: write` 和 `github-pages` environment；确认 environment 的分支保护允许 main。
+**能看到网站首页，就完成了这一步。** 接下来再绑定 `getclips.clutchreframe.com`。
 
-检查 Actions 成功、artifact 仅含 `site/` 的内容。根据 Pages 显示的默认地址，验证首页、`privacy.html`、`terms.html`、图片和字体。通常为 `https://clutchreframe.github.io/GetClips-website/`；若 owner 已设置自定义域名，以后台显示的实际地址为准。相对资源路径应支持子目录访问，SEO 的 canonical 仍为正式目标域名。
+如果错误是 `Get Pages site failed` 或 `Error: Not Found`，先检查第 2、3 小步的 Source 设置，再重跑；不用重新提交代码。
 
-参考：[GitHub 自定义 Pages workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。
+## 4. 验证主域名 clutchreframe.com（可选，建议做一次）
 
-## 4. 核对 owner 域名验证
+**在 `ClutchReframe` 账号下验证主域名 `clutchreframe.com` 一次，就能保护该账号使用的 `getclips.clutchreframe.com`、`clips.clutchreframe.com` 等直接子域名。** 这是 GitHub 推荐的保护措施，不是上线的必需步骤。（[GitHub 域名验证说明](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages)）
 
-在 GitHub owner 的 **Settings → Pages → Verified domains** 中只读核对 `clutchreframe.com` 的验证状态。个人 owner 用个人 Settings；组织 owner 用组织 Settings，不能在仓库设置中查找 owner 验证。
+按下面操作：
 
-父域已在正确的 `ClutchReframe` owner 下验证时直接复用，保护覆盖其直接子域，保留现有 TXT。
+1. 使用 `ClutchReframe` 账号登录，打开[账号的 Pages 设置](https://github.com/settings/pages)。入口是右上角头像 → **Settings → Pages**。
+2. 查看 **Verified domains**。如果 `clutchreframe.com` 已显示 **Verified**，直接进入第 5 步。
+3. 如果主域名还没有验证，点击 **Add a domain**，输入 `clutchreframe.com`，点击 **Add domain**。
+4. 保留 GitHub 给出的 TXT 记录页面。另开 [Cloudflare](https://dash.cloudflare.com/)，选择 `clutchreframe.com` → **DNS → Records → Add record**。
+5. **Type** 选 `TXT`，**Name** 和 **Content** 分别复制 GitHub 给出的记录名和验证码，**TTL** 选 `Auto`，点击 **Save**。
+6. 回到 GitHub，点击 **Verify**。如果暂未通过，等 DNS 生效后再试；成功后保留这条 TXT 记录。
 
-若未验证，优先仅添加 `getclips.clutchreframe.com`。根据 GitHub 当次给出的完整名称和值添加验证 TXT；不要猜测或复用其他 owner 的验证码。Cloudflare 自动附加区域域名时，核对最终生成的完整记录名。等待解析生效后回到 GitHub 完成 Verify，并保留有效 TXT。
+**这一节的 Add a domain 填 `clutchreframe.com`；下一节仓库里的 Custom domain 填 `getclips.clutchreframe.com`。**
 
-```powershell
-# 用 GitHub 当前给出的完整 TXT 名称替换参数。
-Resolve-DnsName '<GitHub 指定的完整 TXT 名称>' -Type TXT
-```
+## 5. 在 GitHub 填入网站域名
 
-如遇其他 owner 占用、要求转移父域或删除旧验证，停止域名操作并明确现有归属与影响。GitHub 对已被其他 owner 使用域名的验证可能释放对方站点绑定，不能为了新站重新认领父域。
+1. 回到仓库的 [Settings → Pages](https://github.com/ClutchReframe/GetClips-website/settings/pages)。
+2. 找到 **Custom domain**，填入 `getclips.clutchreframe.com`。
+3. 点击 **Save**。先保存这里，再去 Cloudflare 添加下一步的记录。（[GitHub 子域名设置说明](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#configuring-a-subdomain)）
 
-参考：[GitHub 域名验证及直接子域保护](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/verifying-your-custom-domain-for-github-pages)。
+这时 DNS 检查可能还未通过，继续第 6 步。
 
-## 5. 先设置 GitHub 自定义域名
+## 6. 在 Cloudflare 添加 getclips 记录
 
-在新仓库 **Settings → Pages → Custom domain** 填入 `getclips.clutchreframe.com`，保存。随后再配置 DNS。
+1. 打开 [Cloudflare](https://dash.cloudflare.com/)，选择 `clutchreframe.com`。
+2. 左侧点击 **DNS → Records**。
+3. 点击 **Add record**，按下表填写。（[Cloudflare 操作说明](https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-subdomain/)）
 
-Custom Actions 发布不依赖 `CNAME` 文件；仅创建该文件不能完成后台绑定。不要复制其他网站的 CNAME、验证文件或重定向配置。
-
-参考：[GitHub 自定义域名配置](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)。
-
-## 6. 添加 Cloudflare DNS
-
-进入 **clutchreframe.com → DNS → Records → Add record**：
-
-| 字段 | 值 |
+| 页面字段 | 填写内容 |
 | --- | --- |
 | Type | `CNAME` |
 | Name | `getclips` |
-| Target | `clutchreframe.github.io`，前提是 GitHub owner 未变化 |
-| Proxy status | `DNS only`，灰云 |
+| Target | `clutchreframe.github.io` |
+| Proxy status | `DNS only`，云朵显示灰色 |
 | TTL | `Auto` |
 
-目标不带 `https://` 和仓库路径；不指向 `clutchreframe.com` 或其他子域。不要创建通配符。若同名 A／AAAA／CNAME 冲突，先核对其用途，不直接删除。保留 `clips`、根域和其他已有服务记录。
+4. 点击 **Save**。
 
-参考：[Cloudflare 子域记录](https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-subdomain/)。
+Target 就填表里的域名，不加 `https://` 或仓库名。保留原有的 `clips`、`@`、`www` 和其他记录；如果已经有 `getclips`，先核对它的用途，相同配置无需重复添加。
 
-## 7. 检查 DNS 与 HTTPS
+## 7. 开启 HTTPS
 
-```powershell
-Resolve-DnsName getclips.clutchreframe.com -Type CNAME
-curl.exe -I https://getclips.clutchreframe.com/
-```
+1. 回到仓库的 [Settings → Pages](https://github.com/ClutchReframe/GetClips-website/settings/pages)。
+2. 等待域名旁的 DNS 检查通过。
+3. 等 **Enforce HTTPS** 可以勾选后，将它勾上。DNS 和证书生效可能需要等待，按钮暂时灰色时稍后再看。（[GitHub HTTPS 说明](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#configuring-a-subdomain)）
+4. 打开 **https://getclips.clutchreframe.com/**，确认能看到首页，浏览器没有证书警告。
 
-CNAME 应指向正确 owner 的 `github.io` 主机。等待 GitHub Pages 的 DNS 检查和证书签发完成，然后启用 **Enforce HTTPS**。DNS 缓存和证书签发可能需要等待，不承诺固定完成时间。不要为排查新站修改全域 SSL、根域重定向或其他站点。
+## 8. 发布后检查一遍
 
-## 8. 正式网址验收
+- 用电脑和手机各打开一次首页，检查图片、菜单和按钮是否正常。
+- 播放两段演示视频，切换时上一段应停止。
+- 点击 **Get it on Overwolf**，确认打开正确的产品商店页。
+- 点击页脚的 **Privacy Policy、EULA、Third-party notices**，确认都能正常阅读。
+- 在未登录的浏览器里点击 **FFmpeg Source**，确认能直接下载与应用内 FFmpeg 版本对应的 `.tar.xz` 源码包。
+- 打开 `/missing-page` 和 `/nested/missing-page`，确认显示网站自己的 404 页面，首页链接可用。
+- 打开原来的 `clips.clutchreframe.com`，确认旧站仍正常。
 
-在 `tmp/` 中记录执行时间、实际环境、URL、状态和截图，不将“文档已准备”写成“配置已完成”。至少检查：
+## 遇到问题时看这里
 
-- 首页、法律页、第三方声明、许可证、图片和字体能通过 HTTPS 打开，页面没有资源错误。
-- 320／390／768／1440px 和 200% 缩放布局，键盘导航、移动菜单、FAQ 和无脚本访问。
-- 商店链接打开正确的 ClutchReframe Clips 产品和安装入口。
-- 两条视频实际播放，内容与选项对应；切换停止旧音频；首次加载不请求 YouTube，播放后才连接视频服务。
-- 未登录浏览器从官网直接下载 `ffmpeg-8.1.2-r1` 对应的 `.tar.xz` 附件，无安装、付款或账户前置条件。核对当前分发版仍对应该源码；GitHub 自动生成的 Source code zip/tar.gz 不能替代它。
-- canonical、Open Graph、Twitter 图片、robots、sitemap 均指向正式目标域名，分享图为双游戏内容。
-- `/missing-page` 与 `/nested/missing-page` 返回 HTTP 404，显示可读错误页，其首页入口指向新站。
-- 上线前后核对已有站点的首页、隐私页、条款页和既有验证入口，确认内容与跳转目标未受影响；私有验证内容仅保存在 `tmp/`。
-
-## 排障与停用
-
-按 **仓库 Pages 设置 → workflow artifact → DNS → HTTPS → 相对路径／缓存** 的顺序检查。默认项目网址下也应能加载相对资源。Python 简单服务器默认的未知路径响应不是 GitHub Pages 自定义 404；正式路径和状态必须在线上确认。
-
-将来迁移到其他域名需单独处理占用、入口、canonical 和重定向。本次不预先改动既有站点。停用新站时，先妥善处理其 DNS，再解除 Pages 域名绑定或关闭站点，避免留下指向已停用服务的记录；保留有效的域名验证 TXT。
+| 看到的问题 | 怎么处理 |
+| --- | --- |
+| 部署报 `Get Pages site failed` / `Not Found` | 回到第 3 步，把 Source 设为 GitHub Actions，再重跑失败任务。 |
+| DNS 检查一直未通过 | 核对第 6 步的 CNAME，尤其是 `getclips`、`clutchreframe.github.io` 和灰色云朵。 |
+| Enforce HTTPS 暂时不能勾选 | 先确认 DNS 检查通过，再等待 GitHub 签发证书。 |
+| 提示域名已被其他账号或网站使用 | 先查清现有绑定，不要为了新站删除旧站的域名设置。 |
+| 部署仍然失败，但不是上面的错误 | 打开 Actions → 失败的运行记录 → deploy → 红色步骤，复制具体报错来排查。 |
