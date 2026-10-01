@@ -117,20 +117,3 @@ if (tabs.length && tabList && panel && stage && poster && playButton && playLabe
 
     selectVideo(selectedTab);
 }
-
-const emailAddress = document.querySelector('#contact-email');
-const copyEmailButton = document.querySelector('#copy-email');
-const copyEmailStatus = document.querySelector('#copy-email-status');
-
-if (emailAddress && copyEmailButton && copyEmailStatus && typeof navigator.clipboard?.writeText === 'function') {
-    copyEmailButton.addEventListener('click', async () => {
-        copyEmailStatus.textContent = '';
-        try {
-            await navigator.clipboard.writeText(emailAddress.value);
-            copyEmailStatus.textContent = 'Email address copied.';
-        } catch {
-            copyEmailStatus.textContent = 'Could not copy automatically. Select the email address above and copy it manually.';
-        }
-    });
-    copyEmailButton.hidden = false;
-}

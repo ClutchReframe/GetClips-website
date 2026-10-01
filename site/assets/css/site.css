@@ -49,6 +49,7 @@ h3 { font-size: 24px; letter-spacing: -0.015em; }
 .section { padding-block: 96px; }
 .eyebrow { color: var(--cyan); font-size: 13px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; }
 .muted, .caption { color: var(--secondary); }
+.email-address { overflow-wrap: anywhere; }
 .caption { font-size: 14px; line-height: 1.65; }
 .skip-link { position: fixed; z-index: 10; top: 12px; left: 12px; transform: translateY(-180%); background: var(--cyan); color: var(--bg); padding: 12px 20px; border-radius: 4px; }
 .skip-link:focus { transform: none; }
@@ -134,7 +135,6 @@ h3 { font-size: 24px; letter-spacing: -0.015em; }
 .faq-section { border-top: 1px solid var(--line); background: #090912; }
 .faq-grid { display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 80px; align-items: start; }
 .faq-intro > p { margin-top: 20px; color: var(--secondary); }
-.faq-intro > a { display: inline-block; margin-top: 20px; padding-block: 8px; }
 .faq-list { border-top: 1px solid #363645; }
 .faq-list details { border-bottom: 1px solid #363645; }
 .faq-list summary { padding: 21px 36px 21px 0; position: relative; font-size: 16px; font-weight: 550; list-style: none; }
@@ -142,19 +142,12 @@ h3 { font-size: 24px; letter-spacing: -0.015em; }
 .faq-list summary::after { content: '+'; position: absolute; right: 4px; top: 17px; font-size: 23px; color: var(--cyan); font-weight: 400; }
 .faq-list details[open] summary::after { content: '−'; }
 .faq-list details p { padding: 0 28px 23px 0; color: #acbbcd; font-size: 15px; }
-.contact-section { padding-block: 48px; border-top: 1px solid var(--line); }
-.contact-content { max-width: 680px; }
-.contact-description { margin-block: 16px 24px; color: var(--secondary); }
-.contact-content label { display: block; margin-bottom: 8px; font-weight: 550; }
-.contact-content input { display: block; width: 100%; max-width: 400px; min-height: 50px; padding: 12px; border: 1px solid #45455b; border-radius: 6px; background: var(--surface); color: var(--text); font: inherit; }
-.contact-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-block: 16px 12px; }
-.contact-status { min-height: 1.7em; margin-top: 12px; color: var(--secondary); }
 .closing { text-align: center; background: radial-gradient(ellipse at 50% 100%, #25205b70, transparent 68%); }
 .closing h2 { max-width: 650px; margin: 0 auto 26px; font-size: clamp(36px, 4vw, 54px); }
 .site-footer { border-top: 1px solid var(--line); padding-block: 44px 30px; }
 .footer-top { display: flex; justify-content: space-between; align-items: center; gap: 30px; padding-bottom: 30px; }
 .social-links, .legal-links { display: flex; flex-wrap: wrap; gap: 8px 24px; }
-.social-links a, .legal-links a { color: #b3c0d2; font-size: 14px; padding-block: 10px; }
+.social-links a, .social-links .email-address, .legal-links a { color: #b3c0d2; font-size: 14px; padding-block: 10px; }
 .footer-bottom { padding-top: 24px; border-top: 1px solid var(--line); }
 .ffmpeg-notice { max-width: 980px; margin: 16px 0 20px; font-size: 14px; color: var(--secondary); }
 .ffmpeg-notice a { color: #b3c0d2; }
