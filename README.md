@@ -29,6 +29,8 @@ The homepage presents the hero, demo, core features, workflow, FAQ, and download
 
 The demo uses a local poster image and creates a YouTube privacy-enhanced iframe only after the visitor presses Play. Switching demos removes the previous player. Direct video links remain available when JavaScript is disabled. All fonts are hosted locally.
 
+Keep email contact links pointing to the homepage `#contact` section (`index.html#contact` from other pages). The address is always available for manual copying; the copy button appears when JavaScript and the Clipboard API are available. Keep `mailto:` only on the explicit **Open email app** link in that section.
+
 After changes, check the homepage and legal pages at 320, 390, 768, and 1440px, and at 200% browser zoom. Verify the mobile menu, keyboard navigation, video playback and switching, access without JavaScript, all local links, and initial network requests. Preserve the complete gameplay frames, HUD, watermarks, and existing black areas in the hero images. The target for an uncached initial page load, before playing a video, is approximately 1.2 MiB.
 
 When changing the website domain, update all HTML metadata, the 404 page's home link, robots.txt, the sitemap, third-party notices, and the social preview image together. Repository contents may be public; keep credentials, private communications, original asset provenance records, and diagnostic files out of the repository. Before publishing, follow the [subdomain setup guide](docs/custom-domain-setup.md) to verify the `site/` artifact and the production URL.
