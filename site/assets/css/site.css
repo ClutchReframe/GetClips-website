@@ -66,6 +66,7 @@ h3 { font-size: 24px; letter-spacing: -0.015em; }
 .button:hover { background: #68e9ff; border-color: #68e9ff; color: var(--bg); }
 .button-secondary { background: transparent; color: var(--text); border-color: #45455b; }
 .button-secondary:hover { background: #151523; border-color: #8292ab; color: white; }
+.button:disabled { background: #151523; border-color: #45455b; color: var(--secondary); cursor: default; }
 .button-small { min-height: 44px; padding: 10px 16px; font-size: 14px; }
 .button svg { width: 18px; height: 18px; flex-shrink: 0; }
 .menu-toggle { display: none; min-width: 56px; min-height: 44px; border: 1px solid #45455b; border-radius: 5px; background: transparent; font-size: 14px; }
@@ -207,7 +208,7 @@ h3 { font-size: 24px; letter-spacing: -0.015em; }
     .js .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
     .js .site-nav { display: none; }
     .js .site-nav.is-open { display: flex; }
-    .js .site-nav > a { width: 100%; }
+    .js .site-nav > a, .js .site-nav > .button { width: 100%; }
     .js .site-nav { max-height: calc(100dvh - 88px); overflow-y: auto; }
     .hero { padding-block: 44px 56px; }
     .hero h1 { font-size: clamp(38px, 8.5vw, 52px); }
